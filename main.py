@@ -8,8 +8,10 @@ from PyQt5.QtWidgets import *
 class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
+
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setStyleSheet("background-color: gray;")
+        self.showMaximized()
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://duckduckgo.com"))
         self.browser.urlChanged.connect(self.update_urlbar)
