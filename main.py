@@ -6,9 +6,11 @@ from PyQt5.QtWidgets import *
 
 
 class MainWindow(QMainWindow):
-    print("HEllo")
+
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+
+        self.setStyleSheet("background-color: gray;")
 
         self.browser = QWebEngineView()
 
