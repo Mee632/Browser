@@ -9,25 +9,16 @@ class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
-
         self.setStyleSheet("background-color: gray;")
-
         self.browser = QWebEngineView()
-
         self.browser.setUrl(QUrl("http://duckduckgo.com"))
-
         self.browser.urlChanged.connect(self.update_urlbar)
-
         self.browser.loadFinished.connect(self.update_title)
-
         self.setCentralWidget(self.browser)
-
         self.status = QStatusBar()
-
         self.setStatusBar(self.status)
 
         navtb = QToolBar("Navigation")
-
         self.addToolBar(navtb)
 
         back_btn = QAction("Back", self)
