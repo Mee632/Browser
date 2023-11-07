@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet("background-color: gray;")
         self.showMaximized()
         self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("http://duckduckgo.com"))
+        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
         self.browser.urlChanged.connect(self.update_urlbar)
         self.browser.loadFinished.connect(self.update_title)
         self.setCentralWidget(self.browser)
@@ -60,7 +60,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("% s - Geek Browser" % title)
 
     def navigate_home(self):
-        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
+        self.browser.setUrl(QUrl("http://www.duckduck.com"))
 
     def navigate_to_url(self):
         q = QUrl(self.urlbar.text())
