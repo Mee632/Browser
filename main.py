@@ -8,11 +8,10 @@ from PyQt5.QtWidgets import *
 class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
-
         super(MainWindow, self).__init__(*args, **kwargs)
-        self.setStyleSheet("background-color: gray;")
-        self.showMaximized()
         self.browser = QWebEngineView()
+        self.showMaximized()
+        self.setStyleSheet("background-color: gray;")
         self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
         self.browser.urlChanged.connect(self.update_urlbar)
         self.browser.loadFinished.connect(self.update_title)
@@ -20,38 +19,38 @@ class MainWindow(QMainWindow):
         self.status = QStatusBar()
         self.setStatusBar(self.status)
 
-        navtb = QToolBar("Navigation")
-        self.addToolBar(navtb)
-
-        back_btn = QAction("Back", self)
-        back_btn.setStatusTip("Back to previous page")
-        back_btn.triggered.connect(self.browser.back)
-
-        navtb.addAction(back_btn)
-        next_btn = QAction("Forward", self)
-        next_btn.setStatusTip("Forward to next page")
-        next_btn.triggered.connect(self.browser.forward)
-        navtb.addAction(next_btn)
-
-        reload_btn = QAction("Reload", self)
-        reload_btn.setStatusTip("Reload page")
-        reload_btn.triggered.connect(self.browser.reload)
-        navtb.addAction(reload_btn)
+        navbar = QToolBar("Navigation")
+        self.addToolBar(navbar)
 
         home_btn = QAction("Home", self)
         home_btn.setStatusTip("Go home")
         home_btn.triggered.connect(self.navigate_home)
-        navtb.addAction(home_btn)
-        navtb.addSeparator()
+        navbar.addAction(home_btn)
+        navbar.addSeparator()
 
-        self.urlbar = QLineEdit()
-        self.urlbar.returnPressed.connect(self.navigate_to_url)
-        navtb.addWidget(self.urlbar)
+        reload_btn = QAction("Reload", self)
+        reload_btn.setStatusTip("Reload page")
+        reload_btn.triggered.connect(self.browser.reload)
+        navbar.addAction(reload_btn)
+
+        back_btn = QAction("<-", self)
+        back_btn.setStatusTip("Back to previous page")
+        back_btn.triggered.connect(self.browser.back)
+
+        navbar.addAction(back_btn)
+        next_btn = QAction("->", self)
+        next_btn.setStatusTip("Forward to next page")
+        next_btn.triggered.connect(self.browser.forward)
+        navbar.addAction(next_btn)
+
+        self.url_bar = QLineEdit()
+        self.url_bar.returnPressed.connect(self.navigate_to_url)
+        navbar.addWidget(self.url_bar)
 
         stop_btn = QAction("Stop", self)
         stop_btn.setStatusTip("Stop loading current page")
         stop_btn.triggered.connect(self.browser.stop)
-        navtb.addAction(stop_btn)
+        navbar.addAction(stop_btn)
 
         self.show()
 
@@ -63,14 +62,14 @@ class MainWindow(QMainWindow):
         self.browser.setUrl(QUrl("http://www.duckduck.com"))
 
     def navigate_to_url(self):
-        q = QUrl(self.urlbar.text())
+        q = QUrl(self.url_bar.text())
         if q.scheme() == "":
             q.setScheme("http")
         self.browser.setUrl(q)
 
     def update_urlbar(self, q):
-        self.urlbar.setText(q.toString())
-        self.urlbar.setCursorPosition(0)
+        self.url_bar.setText(q.toString())
+        self.url_bar.setCursorPosition(0)
 
 
 app = QApplication(sys.argv)
