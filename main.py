@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
 
     def update_title(self):
         title = self.browser.page().title()
-        self.setWindowTitle("% s - Geek Browser" % title)
+        self.setWindowTitle("% s - Inkognito" % title)
 
     def navigate_home(self):
         self.browser.setUrl(QUrl("http://www.duckduck.com"))
@@ -73,6 +73,6 @@ class MainWindow(QMainWindow):
 
 
 app = QApplication(sys.argv)
-app.setApplicationName("Geek Browser")
+app.setApplicationName("Inkognito")
 window = MainWindow()
 app.exec_()
