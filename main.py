@@ -1,78 +1,100 @@
 import sys
-
 from PyQt5.QtCore import *
-from PyQt5.QtWebEngineWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import *
 
+class BrowserWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-class MainWindow(QMainWindow):
-
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
         self.browser = QWebEngineView()
-        self.showMaximized()
-        self.setStyleSheet("background-color: gray;")
-        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
-        self.browser.urlChanged.connect(self.update_urlbar)
-        self.browser.loadFinished.connect(self.update_title)
-        self.setCentralWidget(self.browser)
-        self.status = QStatusBar()
-        self.setStatusBar(self.status)
+        self.browser.setUrl(QUrl("http://www.google.com"))
 
-        navbar = QToolBar("Navigation")
+        self.setCentralWidget(self.browser)
+
+        # Create navigation bar
+        navbar = QToolBar()
         self.addToolBar(navbar)
 
-        home_btn = QAction("Home", self)
-        home_btn.setStatusTip("Go home")
-        home_btn.triggered.connect(self.navigate_home)
-        navbar.addAction(home_btn)
-        navbar.addSeparator()
+        # Back button
+        back_btn = QAction("Back", self)
+        back_btn.setStatusTip("Back to previous page")
+        back_btn.triggered.connect(self.browser.back)
+        navbar.addAction(back_btn)
 
+        # Forward button
+        forward_btn = QAction("Forward", self)
+        forward_btn.setStatusTip("Forward to next page")
+        forward_btn.triggered.connect(self.browser.forward)
+        navbar.addAction(forward_btn)
+
+        # Reload button
         reload_btn = QAction("Reload", self)
         reload_btn.setStatusTip("Reload page")
         reload_btn.triggered.connect(self.browser.reload)
         navbar.addAction(reload_btn)
 
-        back_btn = QAction("<-", self)
-        back_btn.setStatusTip("Back to previous page")
-        back_btn.triggered.connect(self.browser.back)
+        # Home button
+        home_btn = QAction("Home", self)
+        home_btn.setStatusTip("Go home")
+        home_btn.triggered.connect(self.navigate_home)
+        navbar.addAction(home_btn)
 
-        navbar.addAction(back_btn)
-        next_btn = QAction("->", self)
-        next_btn.setStatusTip("Forward to next page")
-        next_btn.triggered.connect(self.browser.forward)
-        navbar.addAction(next_btn)
+        # Separate the navigation buttons from the URL bar
+        navbar.addSeparator()
 
+        # URL bar
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate_to_url)
         navbar.addWidget(self.url_bar)
 
-        stop_btn = QAction("Stop", self)
-        stop_btn.setStatusTip("Stop loading current page")
-        stop_btn.triggered.connect(self.browser.stop)
-        navbar.addAction(stop_btn)
+        # Search button
+        search_btn = QAction("Search", self)
+        search_btn.setStatusTip("Search the web")
+        search_btn.triggered.connect(self.navigate_to_url)
+        navbar.addAction(search_btn)
 
-        self.show()
+        # Settings button
+        settings_btn = QAction("Settings", self)
+        settings_btn.setStatusTip("Open settings")
+        settings_btn.triggered.connect(self.open_settings)
+        navbar.addAction(settings_btn)
 
-    def update_title(self):
-        title = self.browser.page().title()
-        self.setWindowTitle("% s - Inkognito" % title)
+        # Update URL bar
+        self.browser.urlChanged.connect(self.update_urlbar)
+
+        # Handle settings window
+        self.settings_window = SettingsWindow(self)
+
+        self.showMaximized()
 
     def navigate_home(self):
-        self.browser.setUrl(QUrl("http://www.duckduck.com"))
+        self.browser.setUrl(QUrl("http://www.google.com"))
 
     def navigate_to_url(self):
         q = QUrl(self.url_bar.text())
         if q.scheme() == "":
             q.setScheme("http")
+
         self.browser.setUrl(q)
 
     def update_urlbar(self, q):
         self.url_bar.setText(q.toString())
         self.url_bar.setCursorPosition(0)
 
+    def open_settings(self):
+        self.settings_window.show()
 
-app = QApplication(sys.argv)
-app.setApplicationName("Inkognito")
-window = MainWindow()
-app.exec_()
+class SettingsWindow(QWidget):
+    def __init__(self, parent):
+        super().__init__()
+
+        self.setGeometry(parent.x() + 50, parent.y() + 50, 300, 200)
+        self.setWindowTitle("Settings")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    QApplication.setApplicationName("Simple Browser")
+    main_window = BrowserWindow()
+    app.exec_()
