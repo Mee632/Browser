@@ -1,15 +1,16 @@
 import sys
+
 from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import *
+
 
 class BrowserWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("http://www.google.com"))
+        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
 
         self.setCentralWidget(self.browser)
 
@@ -18,13 +19,13 @@ class BrowserWindow(QMainWindow):
         self.addToolBar(navbar)
 
         # Back button
-        back_btn = QAction("Back", self)
+        back_btn = QAction("<-", self)
         back_btn.setStatusTip("Back to previous page")
         back_btn.triggered.connect(self.browser.back)
         navbar.addAction(back_btn)
 
         # Forward button
-        forward_btn = QAction("Forward", self)
+        forward_btn = QAction("->", self)
         forward_btn.setStatusTip("Forward to next page")
         forward_btn.triggered.connect(self.browser.forward)
         navbar.addAction(forward_btn)
@@ -70,7 +71,7 @@ class BrowserWindow(QMainWindow):
         self.showMaximized()
 
     def navigate_home(self):
-        self.browser.setUrl(QUrl("http://www.google.com"))
+        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
 
     def navigate_to_url(self):
         q = QUrl(self.url_bar.text())
@@ -86,12 +87,14 @@ class BrowserWindow(QMainWindow):
     def open_settings(self):
         self.settings_window.show()
 
+
 class SettingsWindow(QWidget):
     def __init__(self, parent):
         super().__init__()
 
         self.setGeometry(parent.x() + 50, parent.y() + 50, 300, 200)
         self.setWindowTitle("Settings")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
