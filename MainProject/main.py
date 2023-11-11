@@ -11,6 +11,7 @@ class BrowserWindow(QMainWindow):
 
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
+        self.setStyleSheet("background-color: #aaaaaa;")
 
         self.setCentralWidget(self.browser)
 
@@ -88,13 +89,23 @@ class BrowserWindow(QMainWindow):
         self.settings_window.show()
 
 
+# New window
 class SettingsWindow(QWidget):
     def __init__(self, parent):
         super().__init__()
 
-        self.setGeometry(parent.x() + 50, parent.y() + 50, 500, 600)
+        self.setGeometry(parent.x() + 50, parent.y() + 50, 300, 200)
         self.setWindowTitle("Settings")
 
+        # Theme button
+        theme_btn = QPushButton("Change Theme", self)
+        theme_btn.clicked.connect(self.change_theme)
+        theme_btn.setGeometry(10, 10, 150, 30)
+
+    def change_theme(self):
+        color = QColorDialog.getColor()
+        if color.isValid():
+            self.setStyleSheet(f"background-color: {color.name()};")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
