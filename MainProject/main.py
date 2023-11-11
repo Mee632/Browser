@@ -92,7 +92,7 @@ class SettingsWindow(QWidget):
     def __init__(self, parent):
         super().__init__()
 
-        self.setGeometry(parent.x() + 50, parent.y() + 50, 300, 200)
+        self.setGeometry(parent.x() + 50, parent.y() + 50, 500, 600)
         self.setWindowTitle("Settings")
 
 
