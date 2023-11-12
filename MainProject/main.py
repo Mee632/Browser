@@ -1,7 +1,7 @@
 import sys
 
 from PyQt5.QtCore import *
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
 from PyQt5.QtWidgets import *
 
 
@@ -88,6 +88,13 @@ class BrowserWindow(QMainWindow):
     def open_settings(self):
         self.settings_window.show()
 
+    def set_default_search_engine(self, engine):
+        search_settings = QWebEngineSettings.globalSettings()
+        if engine == "google":
+            search_settings.setDefaultSearchEngine("https://www.google.com/search?q={}")
+        elif engine == "duckduckgo":
+            search_settings.setDefaultSearchEngine("https://duckduckgo.com/?q={}")
+
 
 # New window
 class SettingsWindow(QWidget):
@@ -102,10 +109,26 @@ class SettingsWindow(QWidget):
         theme_btn.clicked.connect(self.change_theme)
         theme_btn.setGeometry(10, 10, 150, 30)
 
+        search_label = QLabel("Default Search Engine:", self)
+        search_label.setGeometry(10, 50, 150, 30)
+
+        self.search_combo = QComboBox(self)
+        self.search_combo.addItems(["Google", "DuckDuckGo"])
+        self.search_combo.setGeometry(160, 50, 120, 30)
+
+        search_btn = QPushButton("Apply", self)
+        search_btn.clicked.connect(self.apply_search_engine)
+        search_btn.setGeometry(10, 90, 100, 30)
+
+
     def change_theme(self):
         color = QColorDialog.getColor()
         if color.isValid():
             self.setStyleSheet(f"background-color: {color.name()};")
+
+    def apply_search_engine(self):
+        selected_engine = self.search_combo.currentText().lower()
+        self.parent().set_default_search_engine(selected_engine)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
