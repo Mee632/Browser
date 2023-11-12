@@ -120,7 +120,6 @@ class SettingsWindow(QWidget):
         search_btn.clicked.connect(self.apply_search_engine)
         search_btn.setGeometry(10, 90, 100, 30)
 
-
     def change_theme(self):
         color = QColorDialog.getColor()
         if color.isValid():
@@ -129,6 +128,7 @@ class SettingsWindow(QWidget):
     def apply_search_engine(self):
         selected_engine = self.search_combo.currentText().lower()
         self.parent().set_default_search_engine(selected_engine)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
