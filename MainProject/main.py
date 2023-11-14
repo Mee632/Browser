@@ -9,6 +9,8 @@ class BrowserWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        print("hello world")
+
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
         self.setStyleSheet("background-color: #aaaaaa;")
