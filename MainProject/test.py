@@ -128,7 +128,7 @@ class BrowserWindow(QMainWindow):
             json.dump(config_data, config_file, indent=2)
 
     def closeEvent(self, event):
-        # Speichere Konfiguration beim Beenden der Anwendung
+        # Speichere Konfiguration beim Beenden der App
         self.save_configuration()
         event.accept()
 
