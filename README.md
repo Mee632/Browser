@@ -10,3 +10,5 @@ It doesn't save any cookies or your browser search history. And not even your ac
 ## 🌓When will it launch:
 
 When its ready
+
+you can see the progress in the Main Project Folder 
