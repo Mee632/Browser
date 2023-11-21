@@ -110,6 +110,10 @@ class SettingsWindow(QWidget):
         theme_btn.clicked.connect(self.change_theme)
         theme_btn.setGeometry(10, 10, 150, 30)
 
+        #extencions_btn  = QPushButton("add extencions", self)
+        #extencions_btn.clicked.connect(self.)
+        #extencions_btn.set.Geometry(10, 10, 150, 30
+
         search_label = QLabel("Default Search Engine:", self)
         search_label.setGeometry(10, 50, 150, 30)
 
