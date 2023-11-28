@@ -1,173 +1,95 @@
-import json
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QStackedLayout
+from PyQt5.QtCore import QUrl
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 import sys
-from PyQt5.QtCore import *
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEngineSettings
-from PyQt5.QtWidgets import *
 
 
-class BrowserWindow(QMainWindow):
+class MainWindow(QWidget):
     def __init__(self):
-        super().__init__()
-
-        print("hello world")
+        super(MainWindow,self).__init__()
+        self.setWindowTitle("Web Browser")
+        self.setGeometry(100, 100, 1200, 600)
+        self.home_url = "http://www.google.com"
+        self.second_url = "https://duckduckgo.com/"
 
         self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
-        self.setStyleSheet("background-color: #aaaaaa;")
+        self.browser.setUrl(QUrl(self.home_url))
 
-        self.setCentralWidget(self.browser)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.browser)
 
-        # Create navigation bar
-        navbar = QToolBar()
-        self.addToolBar(navbar)
+        self.setLayout(self.layout)
 
-        # Back button
-        back_btn = QAction("<-", self)
-        back_btn.setStatusTip("Back to previous page")
-        back_btn.triggered.connect(self.browser.back)
-        navbar.addAction(back_btn)
+        # Add navigation buttons
+        self.back_button = QPushButton("Back")
+        self.forward_button = QPushButton("Forward")
+        self.settings_button = QPushButton("Settings")
 
-        # Forward button
-        forward_btn = QAction("->", self)
-        forward_btn.setStatusTip("Forward to next page")
-        forward_btn.triggered.connect(self.browser.forward)
-        navbar.addAction(forward_btn)
+        self.back_button.clicked.connect(self.browser.back)
+        self.forward_button.clicked.connect(self.browser.forward)
+        self.settings_button.clicked.connect(self.open_settings)
 
-        # Reload button
-        reload_btn = QAction("Reload", self)
-        reload_btn.setStatusTip("Reload page")
-        reload_btn.triggered.connect(self.browser.reload)
-        navbar.addAction(reload_btn)
-
-        # Home button
-        home_btn = QAction("Home", self)
-        home_btn.setStatusTip("Go home")
-        home_btn.triggered.connect(self.navigate_home)
-        navbar.addAction(home_btn)
-
-        # Separate the navigation buttons from the URL bar
-        navbar.addSeparator()
-
-        # URL bar
-        self.url_bar = QLineEdit()
-        self.url_bar.returnPressed.connect(self.navigate_to_url)
-        navbar.addWidget(self.url_bar)
-
-        # Search button
-        search_btn = QAction("Search", self)
-        search_btn.setStatusTip("Search the web")
-        search_btn.triggered.connect(self.navigate_to_url)
-        navbar.addAction(search_btn)
-
-        # Settings button
-        settings_btn = QAction("Settings", self)
-        settings_btn.setStatusTip("Open settings")
-        settings_btn.triggered.connect(self.open_settings)
-        navbar.addAction(settings_btn)
-
-        # Update URL bar
-        self.browser.urlChanged.connect(self.update_urlbar)
-
-        # Handle settings window
-        self.settings_window = SettingsWindow(self)
-
-        self.load_configuration()
-
-        self.showMaximized()
-
-    def navigate_home(self):
-        self.browser.setUrl(QUrl("http://www.duckduckgo.com"))
-
-    def navigate_to_url(self):
-        q = QUrl(self.url_bar.text())
-        if q.scheme() == "":
-            q.setScheme("http")
-
-        self.browser.setUrl(q)
-
-    def update_urlbar(self, q):
-        self.url_bar.setText(q.toString())
-        self.url_bar.setCursorPosition(0)
+        self.layout.addWidget(self.back_button)
+        self.layout.addWidget(self.forward_button)
+        self.layout.addWidget(self.settings_button)
 
     def open_settings(self):
+        self.settings_window = SettingsWindow()
         self.settings_window.show()
 
-    def set_default_search_engine(self, engine):
-        search_settings = QWebEngineSettings.globalSettings()
-        if engine == "google":
-            search_settings.setDefaultSearchEngine("https://www.google.com/search?q={}")
-        elif engine == "duckduckgo":
-            search_settings.setDefaultSearchEngine("https://duckduckgo.com/?q={}")
 
-    def load_configuration(self):
-        try:
-            with open("config.json", "r") as config_file:
-                config_data = json.load(config_file)
-
-                # setze die Standart Search Engine
-                default_search_engine = config_data.get("default_search_engine", "duckduckgo")
-                self.set_default_search_engine(default_search_engine)
-
-                # Setze die Hintergrundfarbe
-                background_color = config_data.get("default_search_engine", "#aaaaaa")
-                self.setStyleSheet(f"background-color: {background_color};")
-
-        except FileNotFoundError:
-            # Standardwerte, wenn die Konfigurationsdatei nicht gefunden wird
-            self.set_default_search_engine("duckduckgo")
-            self.setStyleSheet("background-color: #aaaaaa;")
-
-    def save_configuration(self):
-        config_data = {
-            "default_search_engine": self.current_search_engine,
-            "background_color": self.styleSheet().split(":")[1].strip()
-        }
-
-        with open("config.json", "w") as config_file:
-            json.dump(config_data, config_file, indent=2)
-
-    def closeEvent(self, event):
-        # Speichere Konfiguration beim Beenden der App
-        self.save_configuration()
-        event.accept()
-
-
-# New window
 class SettingsWindow(QWidget):
-    def __init__(self, parent):
-        super().__init__()
-
-        self.setGeometry(parent.x() + 50, parent.y() + 50, 300, 200)
+    def __init__(self):
+        super(SettingsWindow, self).__init__()
         self.setWindowTitle("Settings")
+        self.setGeometry(100, 100, 300, 200)
 
-        # Theme button
-        theme_btn = QPushButton("Change Theme", self)
-        theme_btn.clicked.connect(self.change_theme)
-        theme_btn.setGeometry(10, 10, 150, 30)
+        self.theme_button = QPushButton("Switch Theme")
+        self.browser_button = QPushButton("Switch Browser")
 
-        search_label = QLabel("Default Search Engine:", self)
-        search_label.setGeometry(10, 50, 150, 30)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.theme_button)
+        self.layout.addWidget(self.browser_button)
+        self.setLayout(self.layout)
 
-        self.search_combo = QComboBox(self)
-        self.search_combo.addItems(["Google", "DuckDuckGo"])
-        self.search_combo.setGeometry(160, 50, 120, 30)
+        self.theme_button.clicked.connect(self.switch_theme)
+        self.browser_button.clicked.connect(self.switch_browser)
 
-        search_btn = QPushButton("Apply", self)
-        search_btn.clicked.connect(self.apply_search_engine)
-        search_btn.setGeometry(10, 90, 100, 30)
+        self.browser_state = 0  # start with Google as default
+        self.theme_state = 0  # start with White theme as default
 
-    def change_theme(self):
-        color = QColorDialog.getColor()
-        if color.isValid():
-            self.setStyleSheet(f"background-color: {color.name()};")
+        self.dark_theme = """
+            QPushButton {
+                background-color: #000000;
+                color: white;
+            }
+        """
 
-    def apply_search_engine(self):
-        selected_engine = self.search_combo.currentText().lower()
-        self.parent().set_default_search_engine(selected_engine)
+        self.light_theme = """
+            QPushButton {
+                background-color: #FFFFFF;
+                color: black;
+            }
+        """
+
+    def switch_theme(self):
+        if self.theme_state == 0:
+            self.setStyleSheet(self.dark_theme)
+            self.theme_state = 1
+        else:
+            self.setStyleSheet(self.light_theme)
+            self.theme_state = 0
+
+    def switch_browser(self):
+        if self.browser_state == 0:
+            window.browser.setUrl(QUrl(window.second_url))
+            self.browser_state = 1
+        else:
+            window.browser.setUrl(QUrl(window.home_url))
+            self.browser_state = 0
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    QApplication.setApplicationName("Simple Browser")
-    main_window = BrowserWindow()
-    app.exec_()
+app = QApplication([])
+window = MainWindow()
+window.show()
+sys.exit(app.exec_())
