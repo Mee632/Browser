@@ -58,12 +58,12 @@ class Browser(QMainWindow):
         self.addToolBar(navtb)
 
         # Back button
-        back_btn = QAction('Back', self)
+        back_btn = QAction('<-', self)
         back_btn.triggered.connect(self.browser.back)
         navtb.addAction(back_btn)
 
         # Forward button
-        forward_btn = QAction('Forward', self)
+        forward_btn = QAction('->', self)
         forward_btn.triggered.connect(self.browser.forward)
         navtb.addAction(forward_btn)
 
