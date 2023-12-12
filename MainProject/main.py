@@ -3,6 +3,7 @@ from PyQt5.QtCore import QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QAction, QToolBar, QDialog, QPushButton, QVBoxLayout
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
+
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         super(SettingsDialog, self).__init__(parent)
@@ -29,7 +30,7 @@ class SettingsDialog(QDialog):
             self.browser.setStyleSheet("QWidget { background-color: white; }")
             self.browser.is_light_theme = False
         else:
-            self.browser.setStyleSheet("QWidget { background-color: lightgray; }")
+            self.browser.setStyleSheet("QWidget { background-color: darkgray; }")
             self.browser.is_light_theme = True
 
     def toggle_search_engine(self):
@@ -38,6 +39,7 @@ class SettingsDialog(QDialog):
             self.browser.default_search_engine = "https://www.duckduckgo.com/?q="
         else:
             self.browser.default_search_engine = "http://www.google.com/search?q="
+
 
 class Browser(QMainWindow):
     def __init__(self):
@@ -119,6 +121,7 @@ class Browser(QMainWindow):
     def open_settings(self):
         self.settingsDialog = SettingsDialog(self)
         self.settingsDialog.show()
+
 
 app = QApplication(sys.argv)
 QApplication.setApplicationName('My Browser')
